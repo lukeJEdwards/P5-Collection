@@ -1,50 +1,38 @@
 class L_System {
-  constructor(rules, start, angle) {
+  constructor(rules, start, angle, len, genCount = 1) {
     this.rules = rules;
     this.sentence = start;
     this.angle = radians(angle);
+    this.len = len;
     this.genCount = 0;
+    this.gen(genCount);
   }
 
-  gen() {
-    var newSentence = "";
-    for (let i = 0; i < this.sentence.length; i++) {
-      let current = this.sentence.charAt(i);
-      let found = false;
-      for (let j = 0; j < this.rules.length; j++) {
-        if (current == this.rules[j].input) {
-          found = true;
-          newSentence += this.rules[j].output;
-        }
-      }
-      if (!found) {
-        newSentence += current;
+  drawSystem = (callback) => callback(this.sentence, this.angle, this.len);
+
+  findRule(current) {
+    for (let i = 0; i < this.rules.length; i++) {
+      if (current == this.rules[i].input) {
+        return i;
       }
     }
-    this.sentence = newSentence;
-    this.genCount++;
-    console.log(this.sentence);
+    return null;
   }
 
-  drawSystem() {
-    stroke(0, 102, 0);
-    resetMatrix();
-    translate(width / 2, height);
-    for (let i = 0; i < this.sentence.length; i++) {
-      let current = this.sentence.charAt(i);
-      if (current == "F") {
-        var len = 2;
-        line(0, 0, 0, -len);
-        translate(0, -len, 0);
-      } else if (current == "+") {
-        rotate(this.angle);
-      } else if (current == "-") {
-        rotate(-this.angle);
-      } else if (current == "[") {
-        push();
-      } else if (current == "]") {
-        pop();
+  gen(count = 1) {
+    for (let i = 0; i < count; i++) {
+      var newSentence = "";
+      for (let i = 0; i < this.sentence.length; i++) {
+        let current = this.sentence.charAt(i);
+        let rule = this.findRule(current);
+        if (rule != null) {
+          newSentence += this.rules[rule].output;
+        } else {
+          newSentence += current;
+        }
       }
+      this.sentence = newSentence;
+      this.genCount++;
     }
   }
 }

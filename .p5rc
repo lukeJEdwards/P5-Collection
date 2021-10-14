@@ -1,4 +1,4 @@
 {
   "name": "p5-collection",
-  "projects": ["L-System"]
+  "projects": ["L-System", "L-System-3D", "week-2-VD"]
 }
